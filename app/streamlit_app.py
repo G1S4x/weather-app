@@ -334,8 +334,10 @@ def ranking_bars(df: pd.DataFrame, value: str, title: str, fmt: str, mode: str) 
 
 st.set_page_config(page_title="U.S. Weather Dashboard", page_icon="🌤️", layout="wide")
 
+# A fresh deploy has no database yet; build it once before rendering anything.
 if not DB_PATH.exists():
-    st.error("No processed data found. Click **Refresh from API** in the sidebar to build it.")
+    with st.spinner(f"First launch: downloading weather for {len(CITIES)} cities (about a minute)…"):
+        refresh_data()
 
 # The home city lives in the URL (?home=Detroit) so it survives reloads and bookmarks.
 saved_home = st.query_params.get("home", NO_HOME)
@@ -359,9 +361,6 @@ with st.sidebar:
         with st.spinner(f"Fetching {len(CITIES)} cities from Open-Meteo…"):
             refresh_data()
         st.success("Data refreshed.")
-
-if not DB_PATH.exists():
-    st.stop()
 
 home = None if home == NO_HOME else home
 featured = (([home] if home else []) + [c for c in TOP_CITIES if c != home])[:5]
