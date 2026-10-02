@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 .DS_Store
 .env
+.streamlit/secrets.toml
 .idea/
 .vscode/
 .venv-py39-backup/
